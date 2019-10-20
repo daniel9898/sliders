@@ -1,114 +1,108 @@
-/**
- * Sample React Native App
- * https://github.com/facebook/react-native
- *
- * @format
- * @flow
- */
 
-import React from 'react';
+import React, {useState, useCallback} from 'react';
 import {
-  SafeAreaView,
   StyleSheet,
-  ScrollView,
   View,
-  Text,
-  StatusBar,
+  ScrollView,
+  Text
 } from 'react-native';
+import MySlider from './components/mySlider';
+import MyButton from './components/myButton';
 
-import {
-  Header,
-  LearnMoreLinks,
-  Colors,
-  DebugInstructions,
-  ReloadInstructions,
-} from 'react-native/Libraries/NewAppScreen';
+const App = () => {
+  const [totalAmount, onChangeTotalAmount] = useState(5000);
+  const [period, onChangePeriod] = useState(3);
+  
+  calculateFixedFee = () => {
+    return (totalAmount / period).toFixed(2);
+  }
 
-const App: () => React$Node = () => {
+  onValueRangechange = useCallback((value, label) => {
+    let currentValue = Math.round(value);
+    label == 'PLAZO' ? onChangePeriod(currentValue) : onChangeTotalAmount(currentValue);
+  },[])
+
   return (
-    <>
-      <StatusBar barStyle="dark-content" />
-      <SafeAreaView>
-        <ScrollView
-          contentInsetAdjustmentBehavior="automatic"
-          style={styles.scrollView}>
-          <Header />
-          {global.HermesInternal == null ? null : (
-            <View style={styles.engine}>
-              <Text style={styles.footer}>Engine: Hermes</Text>
+    <ScrollView style={styles.container}>
+      <View style={styles.content}>
+        <View style={styles.titleContainer}>
+          <Text style={styles.title}>Simulá tu crédito</Text>
+        </View>
+        <MySlider 
+          label='MONTO TOTAL'
+          min={5000}
+          max={50000}
+          currency='$'
+          value={totalAmount}
+          onValueChange={onValueRangechange}
+        />
+        <MySlider
+          label='PLAZO'
+          min={3}
+          max={24}
+          value={period}
+          onValueChange={onValueRangechange} 
+        />
+        <View style={{flex:1}}>
+            <View style={styles.resultTextContainer}>
+              <Text style={styles.resultLabel}>CUOTA FIJA POR MES</Text>
+              <Text style={styles.resultValue}>$ {calculateFixedFee()}</Text>
             </View>
-          )}
-          <View style={styles.body}>
-            <View style={styles.sectionContainer}>
-              <Text style={styles.sectionTitle}>Step One</Text>
-              <Text style={styles.sectionDescription}>
-                Edit <Text style={styles.highlight}>App.js</Text> to change this
-                screen and then come back to see your edits.
-              </Text>
-            </View>
-            <View style={styles.sectionContainer}>
-              <Text style={styles.sectionTitle}>See Your Changes</Text>
-              <Text style={styles.sectionDescription}>
-                <ReloadInstructions />
-              </Text>
-            </View>
-            <View style={styles.sectionContainer}>
-              <Text style={styles.sectionTitle}>Debug</Text>
-              <Text style={styles.sectionDescription}>
-                <DebugInstructions />
-              </Text>
-            </View>
-            <View style={styles.sectionContainer}>
-              <Text style={styles.sectionTitle}>Learn More</Text>
-              <Text style={styles.sectionDescription}>
-                Read the docs to discover what to do next:
-              </Text>
-            </View>
-            <LearnMoreLinks />
-          </View>
-        </ScrollView>
-      </SafeAreaView>
-    </>
+            <MyButton
+              color='#1BA98A'
+              text='OBTENÉ CRÉDITO'
+            />
+            <MyButton
+              color='#21466A'
+              text='VER DETALLE DE CUOTAS'
+            />
+        </View>
+      </View>
+    </ScrollView>
+
+   
   );
 };
 
 const styles = StyleSheet.create({
-  scrollView: {
-    backgroundColor: Colors.lighter,
+  container: {
+    flex: 1,
+    backgroundColor: '#094F83',
+    paddingVertical: 15,
+    paddingHorizontal: 15,
   },
-  engine: {
-    position: 'absolute',
-    right: 0,
+  content: {
+    flex: 1,
+    backgroundColor: '#003B65',
+    alignItems: 'center',
+    paddingVertical: 25,
   },
-  body: {
-    backgroundColor: Colors.white,
+  titleContainer: {
+    paddingVertical: 20,
   },
-  sectionContainer: {
-    marginTop: 32,
-    paddingHorizontal: 24,
-  },
-  sectionTitle: {
+  title: {
     fontSize: 24,
-    fontWeight: '600',
-    color: Colors.black,
+    color: '#FFFFFF',
+    fontFamily: 'Montserrat-Bold'
+
   },
-  sectionDescription: {
-    marginTop: 8,
-    fontSize: 18,
-    fontWeight: '400',
-    color: Colors.dark,
+  resultTextContainer: {
+    backgroundColor: '#00365C',
+    alignItems: 'center',
+    paddingVertical: 15,
+    marginBottom: 15,
   },
-  highlight: {
-    fontWeight: '700',
+  resultLabel: {
+    fontSize: 20,
+    color: '#FFFFFF',
+    fontFamily: 'Montserrat-Bold'
   },
-  footer: {
-    color: Colors.dark,
-    fontSize: 12,
-    fontWeight: '600',
-    padding: 4,
-    paddingRight: 12,
-    textAlign: 'right',
+  resultValue: {
+    fontSize: 28,
+    color: '#FFFFFF',
+    fontFamily: 'Montserrat-Bold'
   },
+
 });
 
 export default App;
